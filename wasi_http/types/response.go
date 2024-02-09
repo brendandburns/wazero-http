@@ -86,7 +86,7 @@ func (r *Responses) outgoingResponseWriteFn(ctx context.Context, mod api.Module,
 }
 
 func (r *Responses) outgoingBodyWriteFn(ctx context.Context, mod api.Module, res, ptr uint32) {
-	// For now the body is just the response. Eventually we may need an actual body struct.
+	// For now the body is just the request or response. Eventually we may need an actual body struct.
 	response, found := r.GetResponse(res)
 	data := []byte{}
 	if !found {

@@ -82,7 +82,7 @@ func Instantiate_2023_10_18(ctx context.Context, rt wazero.Runtime, s *streams.S
 	return err
 }
 
-func Instantiate_2023_11_10(ctx context.Context, rt wazero.Runtime, s *streams.Streams, r *Requests, rs *Responses, f *FieldsCollection, o *OutResponses) error {
+func Instantiate_2023_11_10(ctx context.Context, rt wazero.Runtime, s *streams.Streams, r *Requests, rs *Responses, f *FieldsCollection, o *OutResponses, bodies *Bodies) error {
 	_, err := rt.NewHostModuleBuilder(ModuleName_2023_11_10).
 		NewFunctionBuilder().WithFunc(r.newOutgoingRequestFn_2023_11_10).Export("[constructor]outgoing-request").
 		NewFunctionBuilder().WithFunc(f.newFieldsFn).Export("[constructor]fields").
@@ -94,7 +94,7 @@ func Instantiate_2023_11_10(ctx context.Context, rt wazero.Runtime, s *streams.S
 		NewFunctionBuilder().WithFunc(rs.incomingResponseStatusFn).Export("[method]incoming-response.status").
 		NewFunctionBuilder().WithFunc(rs.incomingResponseHeadersFn).Export("[method]incoming-response.headers").
 		NewFunctionBuilder().WithFunc(rs.incomingResponseConsumeFn).Export("[method]incoming-response.consume").
-		NewFunctionBuilder().WithFunc(rs.incomingResponseConsumeFn).Export("[method]incoming-body.stream").
+		NewFunctionBuilder().WithFunc(bodies.incomingBodyStreamFn).Export("[method]incoming-body.stream").
 		NewFunctionBuilder().WithFunc(rs.incomingResponseSubscribe).Export("[method]future-incoming-response.subscribe").
 		NewFunctionBuilder().WithFunc(futureResponseGetFn_2023_11_10).Export("[method]future-incoming-response.get").
 		NewFunctionBuilder().WithFunc(r.incomingRequestMethodFn).Export("[method]incoming-request.method").
@@ -106,8 +106,8 @@ func Instantiate_2023_11_10(ctx context.Context, rt wazero.Runtime, s *streams.S
 		NewFunctionBuilder().WithFunc(o.setResponseOutparamFn_2023_11_10).Export("[static]response-outparam.set").
 		NewFunctionBuilder().WithFunc(rs.newOutgoingResponseFn_2023_11_10).Export("[constructor]outgoing-response").
 		NewFunctionBuilder().WithFunc(rs.outgoingResponseWriteFn_2023_10_18).Export("[method]outgoing-response.body").
-		NewFunctionBuilder().WithFunc(rs.outgoingBodyWriteFn).Export("[method]outgoing-body.write").
-		NewFunctionBuilder().WithFunc(rs.outgoingBodyFinishFn).Export("[static]outgoing-body.finish").
+		NewFunctionBuilder().WithFunc(bodies.outgoingBodyWriteFn).Export("[method]outgoing-body.write").
+		NewFunctionBuilder().WithFunc(bodies.outgoingBodyFinishFn).Export("[static]outgoing-body.finish").
 		NewFunctionBuilder().WithFunc(dropOutgoingResponseFn).Export("[resource-drop]outgoing-response").
 		NewFunctionBuilder().WithFunc(logFn).Export("log-it").
 		NewFunctionBuilder().WithFunc(dropFutureIncomingResponse).Export("[resource-drop]future-incoming-response").

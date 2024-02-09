@@ -20,6 +20,7 @@ type WasiHTTP struct {
 	r  *types.Requests
 	rs *types.Responses
 	o  *types.OutResponses
+	b  *types.Bodies
 	v  string
 }
 
@@ -80,7 +81,8 @@ func (w *WasiHTTP) instantiate_2023_10_18(ctx context.Context, rt wazero.Runtime
 }
 
 func (w *WasiHTTP) instantiate_2023_11_10(ctx context.Context, rt wazero.Runtime) error {
-	if err := types.Instantiate_2023_11_10(ctx, rt, w.s, w.r, w.rs, w.f, w.o); err != nil {
+	w.b = &types.Bodies{ Requests: w.r, Responses: w.rs }
+	if err := types.Instantiate_2023_11_10(ctx, rt, w.s, w.r, w.rs, w.f, w.o, w.b); err != nil {
 		return err
 	}
 	if err := streams.Instantiate_2023_11_10(ctx, rt, w.s); err != nil {
