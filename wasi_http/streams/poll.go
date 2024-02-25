@@ -6,7 +6,10 @@ import (
 	"github.com/tetratelabs/wazero/api"
 )
 
-const PollName_2023_11_10 = "wasi:io/poll@0.2.0-rc-2023-11-10"
+const (
+	PollName_2023_11_10 = "wasi:io/poll@0.2.0-rc-2023-11-10"
+	PollName_0_2_0      = "wasi:io/poll@0.2.0"
+)
 
 func (s *Streams) subscribe(_ context.Context, mod api.Module, stream uint32) uint32 {
 	return 0

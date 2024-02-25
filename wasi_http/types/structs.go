@@ -48,10 +48,18 @@ func (f *FieldsCollection) dropFieldsFn(_ context.Context, handle uint32) {
 	f.DeleteFields(handle)
 }
 
-func (f *FieldsCollection) fieldsFromList(_ context.Context, mod api.Module, this, ptr, len uint32) {
+func (f *FieldsCollection) fieldsFromList(_ context.Context, mod api.Module, field_ptr, field_len, result_ptr uint32) {
 	// TODO
 	fields := make(Fields)
-	f.MakeFields(fields)
+	fieldHandle := f.MakeFields(fields)
+
+	le := binary.LittleEndian
+	data := []byte{}
+	// no error == 0
+	data = le.AppendUint32(data, 0)
+	data = le.AppendUint32(data, fieldHandle)
+	// write result
+	mod.Memory().Write(result_ptr, data)
 }
 
 func (f *FieldsCollection) newFieldsFn(_ context.Context, mod api.Module, ptr, len uint32) uint32 {

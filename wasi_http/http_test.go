@@ -49,7 +49,7 @@ func (h *handler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 }
 
 func TestHttpClient(t *testing.T) {
-	filePaths, _ := filepath.Glob("../testdata/c/main.wasm")
+	filePaths, _ := filepath.Glob("../testdata/*/c/main.wasm")
 	for _, file := range filePaths {
 		fmt.Printf("%v\n", file)
 	}
@@ -85,6 +85,11 @@ func TestHttpClient(t *testing.T) {
 			name = name[3:]
 		}
 
+		ix1 := strings.Index(test, "testdata/")
+		offset := ix1 + len("testdata/")
+		ix2 := strings.Index(test[offset:], "/")
+		version := test[offset : offset+ix2]
+
 		t.Run(name, func(t *testing.T) {
 			bytecode, err := os.ReadFile(test)
 			if err != nil {
@@ -103,7 +108,7 @@ func TestHttpClient(t *testing.T) {
 				WithStdout(os.Stdout).
 				WithArgs("wasi").
 				WithEnv("AUTHORITY", fmt.Sprintf("%s:%s", u.Hostname(), u.Port()))
-			w := MakeWasiHTTP("2023_11_10")
+			w := MakeWasiHTTP(version)
 			w.Instantiate(ctx, runtime)
 
 			instance, err := runtime.InstantiateWithConfig(ctx, bytecode, config)
@@ -138,7 +143,7 @@ func TestHttpClient(t *testing.T) {
 }
 
 func TestServer(t *testing.T) {
-	filePaths := []string{"../testdata/c/server.wasm"}
+	filePaths, _ := filepath.Glob("../testdata/*/c/server.wasm")
 	for _, file := range filePaths {
 		fmt.Printf("%v\n", file)
 	}
@@ -153,6 +158,11 @@ func TestServer(t *testing.T) {
 			name = name[3:]
 		}
 
+		ix1 := strings.Index(test, "testdata/")
+		offset := ix1 + len("testdata/")
+		ix2 := strings.Index(test[offset:], "/")
+		version := test[offset : offset+ix2]
+
 		t.Run(name, func(t *testing.T) {
 			bytecode, err := os.ReadFile(test)
 			if err != nil {
@@ -166,7 +176,7 @@ func TestServer(t *testing.T) {
 
 			wasi_snapshot_preview1.MustInstantiate(ctx, runtime)
 
-			w := MakeWasiHTTP("2023_11_10")
+			w := MakeWasiHTTP(version)
 			w.Instantiate(ctx, runtime)
 
 			instance, err := runtime.Instantiate(ctx, bytecode)

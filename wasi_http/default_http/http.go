@@ -12,6 +12,7 @@ const (
 	ModuleName            = "default-outgoing-HTTP"
 	ModuleName_2023_10_18 = "wasi:http/outgoing-handler@0.2.0-rc-2023-10-18"
 	ModuleName_2023_11_10 = "wasi:http/outgoing-handler@0.2.0-rc-2023-11-10"
+	ModuleName_0_2_0      = "wasi:http/outgoing-handler@0.2.0"
 )
 
 func Instantiate(ctx context.Context, r wazero.Runtime, req *types.Requests, res *types.Responses, f *types.FieldsCollection, version string) error {
@@ -24,6 +25,8 @@ func Instantiate(ctx context.Context, r wazero.Runtime, req *types.Requests, res
 		name = ModuleName_2023_10_18
 	case "2023_11_10":
 		name = ModuleName_2023_11_10
+	case "v0.2.0":
+		name = ModuleName_0_2_0
 	default:
 		return fmt.Errorf("unknown version: %s", version)
 	}
@@ -35,6 +38,8 @@ func Instantiate(ctx context.Context, r wazero.Runtime, req *types.Requests, res
 	case "2023_10_18":
 		builder.NewFunctionBuilder().WithFunc(handler.handleFn_2023_10_18).Export("handle")
 	case "2023_11_10":
+		builder.NewFunctionBuilder().WithFunc(handler.handleFn_2023_11_10).Export("handle")
+	case "v0.2.0":
 		builder.NewFunctionBuilder().WithFunc(handler.handleFn_2023_11_10).Export("handle")
 	}
 	_, err := builder.Instantiate(ctx)

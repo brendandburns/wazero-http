@@ -49,6 +49,8 @@ func (w *WasiHTTP) Instantiate(ctx context.Context, rt wazero.Runtime) error {
 		return w.instantiate_2023_10_18(ctx, rt)
 	case "2023_11_10":
 		return w.instantiate_2023_11_10(ctx, rt)
+	case "v0.2.0":
+		return w.instantiate_0_2_0(ctx, rt)
 	default:
 		return fmt.Errorf("unknown version: '%v'", w.v)
 	}
@@ -81,11 +83,25 @@ func (w *WasiHTTP) instantiate_2023_10_18(ctx context.Context, rt wazero.Runtime
 }
 
 func (w *WasiHTTP) instantiate_2023_11_10(ctx context.Context, rt wazero.Runtime) error {
-	w.b = &types.Bodies{ Requests: w.r, Responses: w.rs }
+	w.b = &types.Bodies{Requests: w.r, Responses: w.rs}
 	if err := types.Instantiate_2023_11_10(ctx, rt, w.s, w.r, w.rs, w.f, w.o, w.b); err != nil {
 		return err
 	}
 	if err := streams.Instantiate_2023_11_10(ctx, rt, w.s); err != nil {
+		return err
+	}
+	if err := default_http.Instantiate(ctx, rt, w.r, w.rs, w.f, w.v); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (w *WasiHTTP) instantiate_0_2_0(ctx context.Context, rt wazero.Runtime) error {
+	w.b = &types.Bodies{Requests: w.r, Responses: w.rs}
+	if err := types.Instantiate_0_2_0(ctx, rt, w.s, w.r, w.rs, w.f, w.o, w.b); err != nil {
+		return err
+	}
+	if err := streams.Instantiate_0_2_0(ctx, rt, w.s); err != nil {
 		return err
 	}
 	if err := default_http.Instantiate(ctx, rt, w.r, w.rs, w.f, w.v); err != nil {
@@ -128,6 +144,8 @@ func (w *WasiHTTP) MakeHandler(ctx context.Context, m api.Module) http.Handler {
 		fnName = "exports_wasi_http_0_2_0_rc_2023_10_18_incoming_handler_handle"
 	case "2023_11_10":
 		fnName = "wasi:http/incoming-handler@0.2.0-rc-2023-11-10#handle"
+	case "v0.2.0":
+		fnName = "wasi:http/incoming-handler@0.2.0#handle"
 	default:
 		log.Fatalf("Unknown version: %v", w.v)
 	}

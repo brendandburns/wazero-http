@@ -14,6 +14,7 @@ const (
 	ModuleName            = "streams"
 	ModuleName_2023_10_18 = "wasi:io/streams@0.2.0-rc-2023-10-18"
 	ModuleName_2023_11_10 = "wasi:io/streams@0.2.0-rc-2023-11-10"
+	ModuleName_0_2_0      = "wasi:io/streams@0.2.0"
 )
 
 type Stream struct {
@@ -66,6 +67,26 @@ func Instantiate_2023_11_10(ctx context.Context, r wazero.Runtime, s *Streams) e
 		return err
 	}
 	_, err = r.NewHostModuleBuilder(PollName_2023_11_10).
+		//NewFunctionBuilder().WithFunc(s.Subscribe).Export("[method]poll.subscribe").
+		NewFunctionBuilder().WithFunc(s.dropPollable).Export("[resource-drop]pollable").
+		NewFunctionBuilder().WithFunc(s.pollableBlock).Export("[method]pollable.block").
+		Instantiate(ctx)
+	return err
+}
+
+func Instantiate_0_2_0(ctx context.Context, r wazero.Runtime, s *Streams) error {
+	_, err := r.NewHostModuleBuilder(ModuleName_0_2_0).
+		NewFunctionBuilder().WithFunc(s.streamReadFn).Export("[method]input-stream.read").
+		NewFunctionBuilder().WithFunc(s.dropInputStreamFn).Export("[resource-drop]input-stream").
+		NewFunctionBuilder().WithFunc(s.dropOutputStreamFn).Export("[resource-drop]output-stream").
+		NewFunctionBuilder().WithFunc(s.blockingWriteAndFlush).Export("[method]output-stream.blocking-write-and-flush").
+		NewFunctionBuilder().WithFunc(s.subscribe).Export("[method]input-stream.subscribe").
+		//NewFunctionBuilder().WithFunc(s.writeStreamFn).Export("write").
+		Instantiate(ctx)
+	if err != nil {
+		return err
+	}
+	_, err = r.NewHostModuleBuilder(PollName_0_2_0).
 		//NewFunctionBuilder().WithFunc(s.Subscribe).Export("[method]poll.subscribe").
 		NewFunctionBuilder().WithFunc(s.dropPollable).Export("[resource-drop]pollable").
 		NewFunctionBuilder().WithFunc(s.pollableBlock).Export("[method]pollable.block").
