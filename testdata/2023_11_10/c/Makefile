@@ -1,4 +1,4 @@
-wasi_sdk := /usr/local/lib/wasi-sdk-20.0
+wasi_sdk := /usr/local/lib/wasi-sdk-21.0
 cc := ${wasi_sdk}/bin/clang
 ar := ${wasi_sdk}/bin/ar
 lib_objs := client.o wasi_http.o
@@ -6,6 +6,9 @@ lib_objs := client.o wasi_http.o
 .phony: gen clean run
 
 default: main.wasm
+
+client.o : client.c
+	${cc} -c client.c -o client.o
 
 %.o : %.c
 	@echo "Compiling c file into o file"
@@ -16,7 +19,7 @@ libwasihttp.a: ${lib_objs}
 
 wasi-http: ; git clone https://github.com/WebAssembly/wasi-http; cd wasi-http; git checkout v0.2.0-rc-2023-11-10 ; cp ../client.wit wit/client.wit; cd ../
 
-gen: wasi-http ; wit-bindgen c ./wasi-http/wit -w client
+gen: wasi-http ; wit-bindgen c --autodrop-borrows yes ./wasi-http/wit -w client
 
 main.wasm: gen main.o libwasihttp.a; ${cc} main.o -L. -lwasihttp -o main.wasm
 

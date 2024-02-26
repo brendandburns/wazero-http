@@ -68,10 +68,20 @@ func TestHttpClient(t *testing.T) {
 			"/post",
 			"/put",
 		},
+		{
+			"/get?some=arg&goes=here",
+			"/post",
+			"/put",
+		},
 	}
 
 	// TODO: Body for requests are not currently supported
 	expectedBodies := [][]string{
+		{
+			"",
+			"{\"foo\": \"bar\"}",
+			"",
+		},
 		{
 			"",
 			"{\"foo\": \"bar\"}",

@@ -19,6 +19,6 @@ int main() {
 }
 
 // The wasm component hook for the 'main'
-bool exports_wasi_cli_0_2_0_rc_2023_11_10_run_run() {
+bool exports_wasi_cli_run_run() {
     return !main();
 }
