@@ -1,5 +1,7 @@
 #include "wasi_http.h"
 
+#include <stdlib.h>
+
 int main() {
     char buff[64 * 1024];
     wasi_http_response_t response = {

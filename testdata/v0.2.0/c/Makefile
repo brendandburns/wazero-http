@@ -1,4 +1,4 @@
-wasi_sdk := /usr/local/lib/wasi-sdk-21.0
+wasi_sdk := /usr/local/lib/wasi-sdk-22.0
 cc := ${wasi_sdk}/bin/clang
 ar := ${wasi_sdk}/bin/ar
 lib_objs := client.o wasi_http.o

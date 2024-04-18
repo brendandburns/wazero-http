@@ -1,6 +1,8 @@
 #include <assert.h>
 #include <string.h>
 #include <stdio.h>
+#include <malloc.h>
+
 #include "client.h"
 #include "wasi_http.h"
 
