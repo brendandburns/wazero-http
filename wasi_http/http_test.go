@@ -54,7 +54,7 @@ func TestHttpClient(t *testing.T) {
 		fmt.Printf("%v\n", file)
 	}
 	if len(filePaths) == 0 {
-		t.Log("nothing to test")
+		t.Log("nothing to test, have you built the clients?")
 		t.FailNow()
 	}
 
@@ -158,7 +158,7 @@ func TestServer(t *testing.T) {
 		fmt.Printf("%v\n", file)
 	}
 	if len(filePaths) == 0 {
-		t.Log("nothing to test")
+		t.Log("nothing to test, have you built the servers")
 		t.FailNow()
 	}
 

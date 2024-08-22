@@ -1,4 +1,5 @@
 #include "wasi_http.h"
+#include <stdlib.h>
 
 int main() {
     char buff[64 * 1024];
